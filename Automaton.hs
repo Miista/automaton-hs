@@ -2,10 +2,12 @@ module Automaton
   (
   -- Class
     State (accept, nextStates, finalStates)
+
   -- Functions
   , canAccept
   ) where
 
+-- | A safer version of the standard 'head' function.
 maybeHead :: [b] -> Maybe b
 maybeHead [] = Nothing
 maybeHead (x:xs) = Just x
@@ -21,6 +23,18 @@ class (Eq a) => State a where
     -- | Represents the final states for this automaton.
     finalStates :: [a]
 
+    -- | Returns the first state which accepts the given character as input.
+    nextState :: Char -> a -> Maybe a
+    nextState c a = maybeHead $ filter ((flip accept) c) (nextStates a)
+
+    -- | Returns whether this automaton can accept the given String.
+    canAccept :: a -> String -> Bool
+    canAccept a [] = a `elem` finalStates
+    canAccept a (x:xs) = case (nextState x a) of
+                            Nothing -> False
+                            Just m -> canAccept m xs
+
+
 move :: (Show a, State a) => a -> String -> (String, String)
 move a s
   | null s      = if (a `elem` finalStates) -- (fin a `elem` nextStates a)
@@ -32,14 +46,3 @@ move a s
                       in case m of
                             Nothing -> ("sink", x:xs)
                             Just m' -> move m' xs
-
--- | Returns the first state which accepts the given character as input.
-nextState :: (State a) => Char -> a -> Maybe a
-nextState c s = maybeHead $ filter ((flip accept) c) (nextStates s)
-
--- | Returns whether this automaton can accept the given String.
-canAccept :: (State a) => a -> String -> Bool
-canAccept a [] = a `elem` finalStates
-canAccept a (x:xs) = case (nextState x a) of
-                        Nothing -> False
-                        Just m -> canAccept m xs
