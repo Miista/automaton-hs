@@ -13,7 +13,7 @@ class (Eq a) => State a where
     -- | Returns the next possible states for a given state
     nextStates :: a -> [a]
 
-    -- | Returns whehter a given state accepts
+    -- | Returns whether a given state accepts
     -- the given character as input.
     accept :: a -> Char -> Bool
 
@@ -38,7 +38,7 @@ class (Eq a) => State a where
 
 move :: (Show a, State a) => a -> String -> (String, String)
 move a s
-  | null s      = if (a `elem` finalStates) -- (fin a `elem` nextStates a)
+  | null s      = if (a `elem` finalStates)
                       then ("fin", s)
                       else (show a, s)
   | otherwise   = let x = head s
