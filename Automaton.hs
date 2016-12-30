@@ -1,10 +1,7 @@
 module Automaton
   (
   -- Class
-    State (accept, nextStates, finalStates)
-
-  -- Functions
-  , canAccept
+    State (accept, nextStates, finalStates, canAccept, step)
   ) where
 
 -- | A safer version of the standard 'head' function.
@@ -34,6 +31,10 @@ class (Eq a) => State a where
                             Nothing -> False
                             Just m -> canAccept m xs
 
+    -- | Returns the next state for any possible state and input.
+    -- If no next state exists, 'Nothing' is returned instead.
+    step :: a -> String -> (Maybe a, String)
+    step a (x:xs) = ((nextState x a), xs)
 
 move :: (Show a, State a) => a -> String -> (String, String)
 move a s
