@@ -6,8 +6,8 @@ module Automaton
 
 -- | A safer version of the standard 'head' function.
 maybeHead :: [b] -> Maybe b
-maybeHead [] = Nothing
-maybeHead (x:xs) = Just x
+maybeHead (x:_) = Just x
+maybeHead _ = Nothing
 
 class (Eq a) => State a where
     -- | Returns the next possible states for a given state
